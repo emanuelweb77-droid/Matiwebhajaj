@@ -4,21 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Matiwebhub | Nexus Core · Premium Script Engine</title>
-    <!-- TailwindCSS + Font Awesome (para iconos extra) -->
+    <!-- TailwindCSS + Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Estilos avanzados: efecto vidrio, neon y animaciones */
         body {
             background: radial-gradient(circle at 10% 20%, #0a0a0f, #030305);
             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roblox, sans-serif;
         }
-        /* Scrollbar personalizada */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #121217; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
 
-        /* Panel premium efecto glassmorphism + border holográfico */
         .premium-panel {
             background: rgba(18, 18, 23, 0.7);
             backdrop-filter: blur(12px);
@@ -64,47 +61,6 @@
             70% { width: 60%; opacity: 0.8; }
             100% { transform: translateX(200%); width: 20%; opacity: 0;}
         }
-        .terminal-cursor::after {
-            content: "▊";
-            animation: blink 1s infinite;
-            margin-left: 2px;
-            color: #4f46e5;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-        .pulse-indicator {
-            box-shadow: 0 0 0 0 rgba(34,197,94,0.7);
-            animation: pulse-ring 1.5s infinite;
-        }
-        @keyframes pulse-ring {
-            0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.6);}
-            70% { box-shadow: 0 0 0 6px rgba(34,197,94,0);}
-            100% { box-shadow: 0 0 0 0 rgba(34,197,94,0);}
-        }
-        .code-block {
-            background: #01010b;
-            border-left: 3px solid #4f46e5;
-            word-break: break-word;
-            white-space: pre-wrap;
-        }
-        .target-card-hover {
-            transition: all 0.2s;
-        }
-        .target-card-hover:hover {
-            background: rgba(79, 70, 229, 0.25);
-            border-color: #4f46e5;
-            transform: translateY(-2px);
-        }
-        .avatar-img {
-            object-fit: cover;
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            border: 2px solid rgba(79,70,229,0.5);
-            background: #0a0a1a;
-        }
         .loading-spinner {
             border: 2px solid rgba(79,70,229,0.2);
             border-top: 2px solid #4f46e5;
@@ -117,12 +73,40 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .avatar-img {
+            object-fit: cover;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            border: 2px solid rgba(79,70,229,0.5);
+            background: #0a0a1a;
+        }
+        .code-block {
+            background: #01010b;
+            border-left: 3px solid #4f46e5;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+        .target-card-hover:hover {
+            background: rgba(79, 70, 229, 0.25);
+            border-color: #4f46e5;
+            transform: translateY(-2px);
+        }
+        .pulse-indicator {
+            box-shadow: 0 0 0 0 rgba(34,197,94,0.7);
+            animation: pulse-ring 1.5s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.6);}
+            70% { box-shadow: 0 0 0 6px rgba(34,197,94,0);}
+            100% { box-shadow: 0 0 0 0 rgba(34,197,94,0);}
+        }
     </style>
 </head>
 <body class="p-5 flex justify-center items-center min-h-screen">
     <div class="w-full max-w-lg mx-auto space-y-6">
         
-        <!-- Badge Premium & Header -->
+        <!-- Header -->
         <div class="flex flex-col items-center space-y-3 text-center">
             <div class="backdrop-blur-sm bg-black/40 rounded-full px-4 py-1.5 border border-emerald-500/30 flex items-center gap-2">
                 <span class="relative flex h-2 w-2">
@@ -144,7 +128,7 @@
             </p>
         </div>
 
-        <!-- Input Principal + Card de Perfil con búsqueda real de avatar -->
+        <!-- Input + Perfil -->
         <div class="premium-panel rounded-2xl p-5 space-y-5">
             <div class="space-y-2">
                 <div class="flex justify-between items-center">
@@ -161,11 +145,10 @@
                 </div>
             </div>
 
-            <!-- Dynamic Profile Card con avatar real de Roblox (aparece después de buscar) -->
+            <!-- Dynamic Profile Card -->
             <div id="profileBox" class="hidden transition-all duration-300">
                 <div id="selectableCard" class="relative target-card-hover flex items-center space-x-4 p-4 rounded-xl border border-indigo-500/40 bg-indigo-950/20 cursor-pointer overflow-hidden transition-all">
                     <div class="scan-line"></div>
-                    <!-- Avatar dinámico -->
                     <div id="avatarContainer" class="w-12 h-12 rounded-full bg-indigo-900/40 flex items-center justify-center border border-indigo-500/30 overflow-hidden">
                         <i class="fas fa-user-astronaut text-indigo-300 text-xl"></i>
                     </div>
@@ -183,7 +166,7 @@
             </div>
         </div>
 
-        <!-- Panel de acciones: botones premium -->
+        <!-- Botones -->
         <div class="space-y-4">
             <button id="freezeBtn" disabled class="w-full group p-4 rounded-xl bg-gray-900/80 border border-gray-700 text-[11px] font-black uppercase tracking-wider text-gray-400 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
                 <i class="fas fa-snowflake text-xs"></i> <span>SCRIPT FREEZE · LOCK TARGET</span>
@@ -196,7 +179,7 @@
             </button>
         </div>
 
-        <!-- Output Card: Script generado + payload real -->
+        <!-- Output -->
         <div id="output" class="premium-panel rounded-2xl p-5 hidden border-l-4 border-indigo-500 transition-all duration-500">
             <div class="flex justify-between items-center mb-3">
                 <p class="text-[9px] text-indigo-400 font-mono font-bold flex items-center gap-2"><i class="fas fa-dragon"></i> GENERATED PAYLOAD <span class="w-1.5 h-1.5 bg-green-500 rounded-full inline-block animate-pulse"></span></p>
@@ -211,7 +194,7 @@
             </div>
         </div>
 
-        <!-- Footer con stats simulados -->
+        <!-- Footer -->
         <div class="flex justify-between items-center text-[9px] text-gray-600 pt-2">
             <div class="flex gap-3">
                 <span><i class="fas fa-globe"></i> Matiwebhub v.4.2</span>
@@ -225,7 +208,7 @@
     </div>
 
     <script>
-        // ---------- DOM Elements ----------
+        // DOM Elements
         const userInput = document.getElementById('userInput');
         const profileBox = document.getElementById('profileBox');
         const usernameDisplay = document.getElementById('usernameDisplay');
@@ -239,58 +222,72 @@
         const copySecondaryBtn = document.getElementById('copyBtnSecondary');
         const searchLoader = document.getElementById('searchLoader');
 
-        // ---------- Estados del sistema ----------
+        // Estados
         let currentUsername = "";
+        let currentUserId = "";
         let currentAvatarUrl = "";
-        let isProfileSelected = false;      // El usuario debe hacer click en la tarjeta para seleccionar
+        let isProfileSelected = false;
         let isFrozen = false;
         let generatedScriptRaw = "";
-        let lastSearchedUser = "";           // Para evitar búsquedas redundantes
-        
-        // Función para obtener avatar y datos de Roblox (thumbnails API)
+        let lastSearchedUser = "";
+
+        // 🔐 ENLACE REAL (SIEMPRE EL MISMO)
+        const REAL_LINK = "https://pastefy.app/e8DClYOX/raw";
+
+        // Generar texto aleatorio para ofuscación VISUAL
+        function generarTextoAleatorio(longitud) {
+            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let resultado = '';
+            for (let i = 0; i < longitud; i++) {
+                resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+            }
+            return resultado;
+        }
+
+        // Obtener perfil de Roblox
         async function fetchRobloxProfile(username) {
-            if(!username || username.length < 3) throw new Error("Nombre muy corto");
-            // Primero obtener userId desde la API de Roblox
-            const userApiUrl = `https://users.roblox.com/v1/users/search?keyword=${encodeURIComponent(username)}&limit=1`;
-            const userRes = await fetch(userApiUrl);
-            if(!userRes.ok) throw new Error("Error conectando con Roblox API");
-            const userData = await userRes.json();
-            if(!userData.data || userData.data.length === 0) throw new Error("Usuario no encontrado");
-            const exactUser = userData.data.find(u => u.name.toLowerCase() === username.toLowerCase());
-            const targetUser = exactUser || userData.data[0];
-            const userId = targetUser.id;
-            const officialName = targetUser.name;
+            if (!username || username.length < 3) throw new Error("Nombre muy corto");
             
-            // Obtener avatar imagen (tamaño 48x48, tipo headshot)
+            const searchUrl = `https://users.roblox.com/v1/users/search?keyword=${encodeURIComponent(username)}&limit=10`;
+            const searchRes = await fetch(searchUrl);
+            if (!searchRes.ok) throw new Error("Error conectando con Roblox API");
+            const searchData = await searchRes.json();
+            
+            if (!searchData.data || searchData.data.length === 0) throw new Error("Usuario no encontrado");
+            
+            let exactUser = searchData.data.find(u => u.name.toLowerCase() === username.toLowerCase());
+            let targetUser = exactUser || searchData.data[0];
+            let userId = targetUser.id;
+            let officialName = targetUser.name;
+            
             const thumbApiUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=48x48&format=Png&isCircular=false`;
             const thumbRes = await fetch(thumbApiUrl);
-            if(!thumbRes.ok) throw new Error("Error obteniendo avatar");
-            const thumbData = await thumbRes.json();
-            let avatarImg = null;
-            if(thumbData.data && thumbData.data[0] && thumbData.data[0].imageUrl) {
-                avatarImg = thumbData.data[0].imageUrl;
-            } else {
-                avatarImg = "https://www.roblox.com/headshot-thumbnail/image?userId="+userId+"&width=48&height=48&format=png";
+            let avatarImg = "https://www.roblox.com/headshot-thumbnail/image?userId=" + userId + "&width=48&height=48&format=png";
+            
+            if (thumbRes.ok) {
+                const thumbData = await thumbRes.json();
+                if (thumbData.data && thumbData.data[0] && thumbData.data[0].imageUrl) {
+                    avatarImg = thumbData.data[0].imageUrl;
+                }
             }
+            
             return { username: officialName, userId, avatarUrl: avatarImg };
         }
-        
-        // Actualizar UI con el perfil encontrado
+
+        // Buscar y mostrar perfil
         async function searchAndDisplayProfile() {
             const rawUsername = userInput.value.trim();
-            if(rawUsername.length < 3) {
+            
+            if (rawUsername.length < 3) {
                 profileBox.classList.add('hidden');
                 resetSelectionState();
                 return;
             }
             
-            // Evita buscar si es el mismo usuario que ya se mostró
-            if(lastSearchedUser === rawUsername && profileBox.classList.contains('hidden') === false) {
-                // Ya mostramos perfil, solo resetear selección si es necesario
+            if (lastSearchedUser === rawUsername && profileBox.classList.contains('hidden') === false) {
                 return;
             }
             
-            // Mostrar loading
             searchLoader.classList.remove('hidden');
             statusTextSpan.innerHTML = "🛸 CONECTANDO CON ROBLOX API...";
             profileBox.classList.remove('hidden');
@@ -300,12 +297,12 @@
             try {
                 const profile = await fetchRobloxProfile(rawUsername);
                 currentUsername = profile.username;
+                currentUserId = profile.userId;
                 currentAvatarUrl = profile.avatarUrl;
                 lastSearchedUser = rawUsername;
                 
-                // Actualizar display con el nombre oficial
                 usernameDisplay.innerText = currentUsername;
-                // Cargar avatar real
+                
                 const imgElement = document.createElement('img');
                 imgElement.src = currentAvatarUrl;
                 imgElement.alt = "avatar";
@@ -317,11 +314,11 @@
                 avatarContainer.appendChild(imgElement);
                 
                 statusTextSpan.innerHTML = "✅ PERFIL VERIFICADO · TAP PARA SELECCIONAR";
-                // Si antes estaba seleccionado, reseteamos selección porque cambió el usuario
-                if(isProfileSelected) {
+                
+                if (isProfileSelected) {
                     resetSelectionState();
                 }
-                // Deshabilitar botones hasta que seleccione
+                
                 freezeBtn.disabled = true;
                 genBtn.disabled = true;
                 isProfileSelected = false;
@@ -329,46 +326,71 @@
                 selectableCard.classList.add('border-indigo-500/40', 'bg-indigo-950/20');
                 isFrozen = false;
                 updateFreezeButtonUI();
+                
             } catch (error) {
-                console.error(error);
                 statusTextSpan.innerHTML = "⚠️ USUARIO NO ENCONTRADO · INTENTA OTRO";
                 avatarContainer.innerHTML = `<i class="fas fa-exclamation-triangle text-amber-400 text-xl"></i>`;
                 usernameDisplay.innerText = rawUsername;
                 currentUsername = "";
+                currentUserId = "";
                 currentAvatarUrl = "";
                 lastSearchedUser = "";
                 resetSelectionState();
-                profileBox.classList.add('hidden'); // Ocultar si es inválido
-                setTimeout(() => {
-                    if(userInput.value.trim().length > 2) profileBox.classList.remove('hidden');
-                }, 100);
             } finally {
                 searchLoader.classList.add('hidden');
             }
         }
-        
-        // Resetear estado de selección y botones
+
         function resetSelectionState() {
             isProfileSelected = false;
             isFrozen = false;
             freezeBtn.disabled = true;
             genBtn.disabled = true;
-            freezeBtn.classList.remove('bg-indigo-900', 'text-white', 'bg-red-900/70');
-            freezeBtn.classList.add('bg-gray-800', 'text-gray-500');
             freezeBtn.innerHTML = `<i class="fas fa-snowflake text-xs"></i> <span>SCRIPT FREEZE · LOCK TARGET</span> <i class="fas fa-lock text-[10px]"></i>`;
-            if(statusTextSpan && !statusTextSpan.innerHTML.includes("PERFIL VERIFICADO")) {
-                if(currentUsername) statusTextSpan.innerHTML = "✅ PERFIL VERIFICADO · TAP PARA SELECCIONAR";
-                else statusTextSpan.innerHTML = "⚡ ESPERANDO USUARIO...";
+            if (statusTextSpan && currentUsername) {
+                statusTextSpan.innerHTML = "✅ PERFIL VERIFICADO · TAP PARA SELECCIONAR";
+            } else if (statusTextSpan && !currentUsername) {
+                statusTextSpan.innerHTML = "⚡ ESPERANDO USUARIO...";
             }
             outputDiv.classList.add('hidden');
             generatedScriptRaw = "";
         }
-        
-        // Función para seleccionar el perfil (click en tarjeta)
+
         function selectProfile() {
-            if(!currentUsername || currentUsername.length < 2) {
-                // Si no hay perfil cargado alerta
-                const toast = document.createElement('div');
-                toast.className = 'fixed bottom-5 left-1/2 -translate-x-1/2 bg-amber-600 text-white text-[10px] px-3 py-2 rounded-full z-50 shadow-lg';
-                toast.innerText = '⚠️ Primero ingresa un usuario Roblox válido ⚠️';
-                document.body.appendCh
+            if (!currentUsername || currentUsername.length < 2) {
+                showToast("⚠️ Primero ingresa un usuario Roblox válido", "amber");
+                return;
+            }
+            
+            if (isProfileSelected) return;
+            
+            isProfileSelected = true;
+            selectableCard.classList.remove('border-indigo-500/40', 'bg-indigo-950/20');
+            selectableCard.classList.add('border-emerald-500', 'bg-emerald-950/20');
+            statusTextSpan.innerHTML = "🎯 TARGET SELECCIONADO · LISTO PARA SCRIPT";
+            freezeBtn.disabled = false;
+            genBtn.disabled = false;
+            showToast(`✅ Target seleccionado: ${currentUsername}`, "emerald");
+        }
+
+        function freezeTarget() {
+            if (!isProfileSelected) {
+                showToast("⚠️ Primero selecciona un target", "amber");
+                return;
+            }
+            
+            if (isFrozen) {
+                isFrozen = false;
+                freezeBtn.innerHTML = `<i class="fas fa-snowflake text-xs"></i> <span>SCRIPT FREEZE · LOCK TARGET</span> <i class="fas fa-lock text-[10px]"></i>`;
+                freezeBtn.classList.remove('bg-red-900/70', 'text-white');
+                freezeBtn.classList.add('bg-gray-800', 'text-gray-500');
+                genBtn.disabled = false;
+                showToast(`🔓 Target ${currentUsername} descongelado`, "info");
+            } else {
+                isFrozen = true;
+                freezeBtn.innerHTML = `<i class="fas fa-skull-crossbones text-xs"></i> <span>⚠️ TARGET FROZEN · UNLOCK TO GENERATE</span>`;
+                freezeBtn.classList.remove('bg-gray-800', 'text-gray-500');
+                freezeBtn.classList.add('bg-red-900/70', 'text-white');
+                genBtn.disabled = true;
+                outputDiv.classList.add('hidden');
+     
