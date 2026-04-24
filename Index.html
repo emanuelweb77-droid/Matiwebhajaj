@@ -6,12 +6,12 @@
     <title>Matiwebhub | Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #0a0a0c; color: #fff; font-family: sans-serif; }
+        body { background: #0a0a0c; color: #fff; font-family: sans-serif; overflow-x: hidden; }
         .panel { background: #121217; border: 1px solid #1f1f27; }
         .input-dark { background: #1c1c24; border: 1px solid #2d2d39; color: white; }
         .btn-blue { background: #4f46e5; font-weight: bold; transition: 0.3s; }
         .btn-blue:disabled { background: #1c1c24; color: #444; opacity: 0.6; }
-        #avatarImg { object-fit: cover; border-radius: 50%; }
+        .avatar-glow { box-shadow: 0 0 15px rgba(79, 70, 229, 0.4); }
     </style>
 </head>
 <body class="p-4 flex justify-center min-h-screen">
@@ -30,18 +30,17 @@
 
         <div class="panel p-6 rounded-2xl space-y-4 shadow-2xl">
             <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Roblox Username</label>
-            <input type="text" id="userInput" oninput="fetchRobloxUser()" placeholder="Enter username..." 
-                   class="w-full p-4 rounded-xl input-dark text-sm outline-none focus:border-indigo-500">
+            <input type="text" id="userInput" oninput="searchUser()" placeholder="Enter username..." 
+                   class="w-full p-4 rounded-xl input-dark text-sm outline-none focus:border-indigo-500 transition-all">
             
-            <div id="profileBox" class="hidden">
+            <div id="profileBox" class="hidden animate-in fade-in zoom-in duration-300">
                 <div onclick="activateButtons()" class="flex items-center space-x-4 p-4 border border-indigo-500 bg-indigo-500/10 rounded-xl cursor-pointer hover:bg-indigo-500/20 transition-all">
-                    <div id="avatarContainer" class="w-14 h-14 rounded-full bg-indigo-900/40 flex items-center justify-center border border-indigo-500/30 overflow-hidden">
-                        <span id="placeholderIcon" class="text-xl">👤</span>
-                        <img id="avatarImg" class="hidden w-full h-full" src="" alt="Avatar">
+                    <div class="relative w-14 h-14 rounded-full bg-indigo-900/40 border border-indigo-500/30 overflow-hidden avatar-glow">
+                        <img id="avatarImg" class="w-full h-full object-cover" src="https://tr.rbxcdn.com/38c353b3f208112d7c58550cb53f192b/150/150/AvatarHeadshot/Png" alt="Avatar">
                     </div>
                     <div>
                         <p id="targetName" class="text-sm font-bold text-white"></p>
-                        <p id="statusText" class="text-[9px] text-indigo-400 font-bold uppercase tracking-widest">SEARCHING...</p>
+                        <p id="statusText" class="text-[9px] text-indigo-400 font-bold uppercase tracking-widest">PROFILE FOUND</p>
                     </div>
                 </div>
             </div>
@@ -58,64 +57,34 @@
 
         <div id="output" class="hidden panel p-5 rounded-2xl border-indigo-500/30 bg-black/50 backdrop-blur">
             <p class="text-[9px] text-indigo-500 mb-3 font-bold uppercase tracking-widest">GENERATED PAYLOAD:</p>
-            <code id="scriptCode" class="text-[10px] break-all text-indigo-200 font-mono"></code>
+            <code id="scriptCode" class="text-[10px] break-all text-indigo-200 font-mono leading-relaxed"></code>
         </div>
     </div>
 
     <script>
-        let typingTimer;
-
-        function fetchRobloxUser() {
-            clearTimeout(typingTimer);
-            const username = document.getElementById('userInput').value;
+        let timer;
+        function searchUser() {
+            clearTimeout(timer);
+            const user = document.getElementById('userInput').value;
             const box = document.getElementById('profileBox');
-            const nameLabel = document.getElementById('targetName');
-            const status = document.getElementById('statusText');
             const img = document.getElementById('avatarImg');
-            const icon = document.getElementById('placeholderIcon');
+            const name = document.getElementById('targetName');
 
-            if (username.length < 3) {
-                box.classList.add('hidden');
-                return;
-            }
+            if(user.length < 3) { box.classList.add('hidden'); return; }
 
-            box.classList.remove('hidden');
-            nameLabel.textContent = username;
-            status.textContent = "SEARCHING...";
-            img.classList.add('hidden');
-            icon.classList.remove('hidden');
-
-            typingTimer = setTimeout(async () => {
-                try {
-                    // Paso 1: Obtener ID del usuario
-                    const userRes = await fetch(`https://roblox-api-proxy.vercel.app/api/user/${username}`);
-                    const userData = await userRes.json();
-                    
-                    if (userData.id) {
-                        // Paso 2: Obtener imagen del avatar usando el ID
-                        const thumbRes = await fetch(`https://roblox-api-proxy.vercel.app/api/thumbnail/${userData.id}`);
-                        const thumbData = await thumbRes.json();
-                        
-                        img.src = thumbData.imageUrl;
-                        img.classList.remove('hidden');
-                        icon.classList.add('hidden');
-                        status.textContent = "PROFILE FOUND (TAP TO SELECT)";
-                    } else {
-                        status.textContent = "USER NOT FOUND";
-                    }
-                } catch (e) {
-                    status.textContent = "ERROR LOADING PROFILE";
-                }
-            }, 500);
+            timer = setTimeout(() => {
+                box.classList.remove('hidden');
+                name.textContent = user;
+                // Comando de Roblox para obtener miniatura por nombre (vía RoProxy)
+                img.src = `https://www.roblox.com/headshot-thumbnail/image?userName=${user}&width=150&height=150&format=png`;
+            }, 400);
         }
 
         function activateButtons() {
-            const fBtn = document.getElementById('freezeBtn');
-            const gBtn = document.getElementById('genBtn');
-            fBtn.disabled = false;
-            fBtn.classList.remove('bg-gray-800', 'text-gray-500');
-            fBtn.classList.add('bg-indigo-800', 'text-white', 'border-indigo-400');
-            gBtn.disabled = false;
+            document.getElementById('statusText').textContent = "SELECTED ✅";
+            document.getElementById('freezeBtn').disabled = false;
+            document.getElementById('freezeBtn').classList.add('bg-indigo-800', 'text-white');
+            document.getElementById('genBtn').disabled = false;
         }
 
         function generate() {
@@ -123,15 +92,14 @@
             document.getElementById('scriptCode').textContent = code;
             document.getElementById('output').classList.remove('hidden');
             const btn = document.getElementById('genBtn');
-            btn.textContent = "COPIED!";
-            setTimeout(() => { btn.textContent = "GENERATE SCRIPT"; }, 2000);
+            btn.textContent = "COPIED TO CLIPBOARD!";
             
             const el = document.createElement('textarea');
-            el.value = code;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
+            el.value = code; document.body.appendChild(el);
+            el.select(); document.execCommand('copy');
             document.body.removeChild(el);
+            
+            setTimeout(() => { btn.textContent = "GENERATE SCRIPT"; }, 2000);
         }
     </script>
 </body>
